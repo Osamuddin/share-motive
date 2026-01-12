@@ -288,7 +288,6 @@ const ShareMotive = () => {
   };
 
   return (
-    // 【修正】スマホでは縦スクロール有効 (overflow-y-auto)、デスクトップでは固定 (lg:overflow-hidden)
     <div className="min-h-screen bg-neutral-950 text-zinc-200 font-sans selection:bg-indigo-500/30 selection:text-white overflow-y-auto lg:overflow-hidden flex flex-col">
       
       {/* Background Ambient Glow */}
@@ -338,7 +337,6 @@ const ShareMotive = () => {
                 <button onClick={toggleSound} className={`p-2 rounded-full transition-all ${soundEnabled ? 'bg-white/10 text-white' : 'text-zinc-600'}`}>
                   {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
                 </button>
-                {/* 【修正】hidden sm:flex を flex に変更してスマホでも常に表示 */}
                 <div className="flex bg-neutral-900 rounded-full p-1 border border-white/5">
                   {['ja', 'en', 'zh'].map((l) => (
                     <button key={l} onClick={() => setLang(l)} className={`px-2.5 py-1 text-[10px] font-bold rounded-full transition-all ${lang === l ? 'bg-white text-black' : 'text-zinc-500 hover:text-zinc-300'}`}>
@@ -352,9 +350,7 @@ const ShareMotive = () => {
       </header>
 
       {/* --- メインコンテンツ (3カラム構成: Bento Grid Style) --- */}
-      {/* 【修正】スマホでスクロール可能にするため、overflowとjustifyの設定をlg以上に限定 */}
       <main className="flex-grow p-4 lg:p-6 lg:overflow-hidden relative z-10 flex flex-col lg:justify-center">
-        {/* 【修正】スマホで高さ自動 (h-auto)、デスクトップで固定 (lg:h-full) */}
         <div className="max-w-[1600px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-4 h-auto lg:h-full lg:max-h-[800px]">
           
           {/* 左カラム: KPI (推定ボーナス & 契約者数) */}
@@ -410,7 +406,8 @@ const ShareMotive = () => {
           {/* 中央カラム: Bento Grid Sales (2x2 Big Cards) */}
           <div className="lg:col-span-6 flex flex-col gap-4">
             
-            <div className="flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 grid-rows-none lg:grid-rows-2 gap-4">
+            {/* 【修正】grid-cols-2 にしてスマホでも常に2列表示に。 */}
+            <div className="flex-grow grid grid-cols-2 lg:grid-cols-2 grid-rows-none lg:grid-rows-2 gap-4">
               {['モバイルベーシック', 'モバイルプレミアム', 'コンボベーシック', 'コンボプレミアム'].map((planName) => {
                 const moPlan = planSales.find(p => (p.name === planName || p.nameEn === planName) && p.type === 'monthly');
                 const yrPlan = planSales.find(p => (p.name === planName || p.nameEn === planName) && p.type === 'yearly');
@@ -421,16 +418,18 @@ const ShareMotive = () => {
                 const totalCount = moPlan.count + yrPlan.count;
 
                 return (
-                  <div key={planName} className="bg-neutral-900/60 backdrop-blur-md rounded-[24px] border border-white/5 p-5 hover:border-white/10 transition-all group flex flex-col justify-between h-auto min-h-[200px] lg:h-full relative overflow-hidden">
+                  // 【修正】スマホではpaddingを小さく(p-3)、文字サイズも小さく(text-xsなど)してレイアウト崩れを防ぐ
+                  <div key={planName} className="bg-neutral-900/60 backdrop-blur-md rounded-[24px] border border-white/5 p-3 sm:p-5 hover:border-white/10 transition-all group flex flex-col justify-between h-auto min-h-[200px] lg:h-full relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     
                     <div className="flex justify-between items-start mb-2">
                        <div>
                           <div className={`w-8 h-1.5 rounded-full ${moPlan.bar} mb-3`}></div>
-                          <h4 className={`font-bold text-sm leading-snug ${moPlan.color || 'text-white'}`}>{displayName}</h4>
+                          {/* プラン名: スマホでは text-xs, PCで text-sm */}
+                          <h4 className={`font-bold text-xs sm:text-sm leading-snug ${moPlan.color || 'text-white'}`}>{displayName}</h4>
                        </div>
                        <div className="text-right">
-                          <span className="block text-xl font-bold text-white tracking-tight">${Math.floor(totalRev).toLocaleString()}</span>
+                          <span className="block text-lg sm:text-xl font-bold text-white tracking-tight">${Math.floor(totalRev).toLocaleString()}</span>
                           <span className="text-[10px] text-zinc-500 font-mono uppercase">REV</span>
                        </div>
                     </div>
