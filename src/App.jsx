@@ -288,7 +288,8 @@ const ShareMotive = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-zinc-200 font-sans selection:bg-indigo-500/30 selection:text-white overflow-hidden flex flex-col">
+    // 【修正】スマホでは縦スクロール有効 (overflow-y-auto)、デスクトップでは固定 (lg:overflow-hidden)
+    <div className="min-h-screen bg-neutral-950 text-zinc-200 font-sans selection:bg-indigo-500/30 selection:text-white overflow-y-auto lg:overflow-hidden flex flex-col">
       
       {/* Background Ambient Glow */}
       <div className="fixed top-0 left-0 right-0 h-96 bg-gradient-to-b from-indigo-900/10 to-transparent pointer-events-none z-0"></div>
@@ -337,7 +338,8 @@ const ShareMotive = () => {
                 <button onClick={toggleSound} className={`p-2 rounded-full transition-all ${soundEnabled ? 'bg-white/10 text-white' : 'text-zinc-600'}`}>
                   {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
                 </button>
-                <div className="hidden sm:flex bg-neutral-900 rounded-full p-1 border border-white/5">
+                {/* 【修正】hidden sm:flex を flex に変更してスマホでも常に表示 */}
+                <div className="flex bg-neutral-900 rounded-full p-1 border border-white/5">
                   {['ja', 'en', 'zh'].map((l) => (
                     <button key={l} onClick={() => setLang(l)} className={`px-2.5 py-1 text-[10px] font-bold rounded-full transition-all ${lang === l ? 'bg-white text-black' : 'text-zinc-500 hover:text-zinc-300'}`}>
                       {l.toUpperCase()}
@@ -350,14 +352,16 @@ const ShareMotive = () => {
       </header>
 
       {/* --- メインコンテンツ (3カラム構成: Bento Grid Style) --- */}
-      <main className="flex-grow p-4 lg:p-6 overflow-hidden relative z-10 flex flex-col justify-center">
-        <div className="max-w-[1600px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-4 h-full max-h-[800px]">
+      {/* 【修正】スマホでスクロール可能にするため、overflowとjustifyの設定をlg以上に限定 */}
+      <main className="flex-grow p-4 lg:p-6 lg:overflow-hidden relative z-10 flex flex-col lg:justify-center">
+        {/* 【修正】スマホで高さ自動 (h-auto)、デスクトップで固定 (lg:h-full) */}
+        <div className="max-w-[1600px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-4 h-auto lg:h-full lg:max-h-[800px]">
           
           {/* 左カラム: KPI (推定ボーナス & 契約者数) */}
           <div className="lg:col-span-3 flex flex-col gap-4">
             
             {/* 推定ボーナス */}
-            <div className="bg-neutral-900/60 backdrop-blur-md rounded-[24px] border border-white/5 p-6 relative overflow-hidden group hover:border-white/10 transition-all flex-1 flex flex-col justify-center">
+            <div className="bg-neutral-900/60 backdrop-blur-md rounded-[24px] border border-white/5 p-6 relative overflow-hidden group hover:border-white/10 transition-all flex-1 flex flex-col justify-center min-h-[200px] lg:min-h-0">
                <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-gradient-to-br from-indigo-600/20 to-purple-600/5 rounded-full blur-[60px] -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
                <div className="relative z-10">
                  <div className="flex items-center gap-2 text-zinc-400 mb-4">
@@ -375,7 +379,7 @@ const ShareMotive = () => {
             </div>
 
             {/* 総契約者数 */}
-            <div className="bg-neutral-900/60 backdrop-blur-md rounded-[24px] border border-white/5 p-6 flex-1 flex flex-col justify-center hover:border-white/10 transition-all">
+            <div className="bg-neutral-900/60 backdrop-blur-md rounded-[24px] border border-white/5 p-6 flex-1 flex flex-col justify-center hover:border-white/10 transition-all min-h-[200px] lg:min-h-0">
               <div className="flex items-center justify-between mb-4">
                  <div className="flex items-center gap-2 text-zinc-400">
                    <div className="bg-white/5 p-1.5 rounded-lg border border-white/5">
@@ -406,7 +410,7 @@ const ShareMotive = () => {
           {/* 中央カラム: Bento Grid Sales (2x2 Big Cards) */}
           <div className="lg:col-span-6 flex flex-col gap-4">
             
-            <div className="flex-grow grid grid-cols-2 grid-rows-2 gap-4">
+            <div className="flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 grid-rows-none lg:grid-rows-2 gap-4">
               {['モバイルベーシック', 'モバイルプレミアム', 'コンボベーシック', 'コンボプレミアム'].map((planName) => {
                 const moPlan = planSales.find(p => (p.name === planName || p.nameEn === planName) && p.type === 'monthly');
                 const yrPlan = planSales.find(p => (p.name === planName || p.nameEn === planName) && p.type === 'yearly');
@@ -417,7 +421,7 @@ const ShareMotive = () => {
                 const totalCount = moPlan.count + yrPlan.count;
 
                 return (
-                  <div key={planName} className="bg-neutral-900/60 backdrop-blur-md rounded-[24px] border border-white/5 p-5 hover:border-white/10 transition-all group flex flex-col justify-between h-full relative overflow-hidden">
+                  <div key={planName} className="bg-neutral-900/60 backdrop-blur-md rounded-[24px] border border-white/5 p-5 hover:border-white/10 transition-all group flex flex-col justify-between h-auto min-h-[200px] lg:h-full relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     
                     <div className="flex justify-between items-start mb-2">
@@ -461,7 +465,7 @@ const ShareMotive = () => {
           </div>
 
           {/* 右カラム: 収支サマリー */}
-          <div className="lg:col-span-3 bg-neutral-900/60 backdrop-blur-md rounded-[24px] border border-white/5 p-6 flex flex-col hover:border-white/10 transition-all">
+          <div className="lg:col-span-3 bg-neutral-900/60 backdrop-blur-md rounded-[24px] border border-white/5 p-6 flex flex-col hover:border-white/10 transition-all min-h-[300px] lg:min-h-0">
             
             <div className="flex items-center gap-2 mb-6 shrink-0">
               <div className="bg-white/5 p-1.5 rounded-lg border border-white/5">
