@@ -26,38 +26,38 @@ const ShareMotive = () => {
   const translations = {
     ja: {
       appTitle: "ShareMotive",
-      goodMorning: "Dashboard",
-      estimatedBonus: "Estimated Bonus",
-      startWorking: "Update View",
-      totalRevenue: "Total Revenue (MRR)",
-      goal: "Goal",
-      totalUsers: "Subscribers",
-      churned: "Churn",
-      newContracts: "New",
-      myShareLabel: "Share Rate",
-      myShareDesc: "Input your percentage",
-      myShare: "Allocation",
-      privacy: "Share rate is stored locally.",
-      live: "LIVE",
+      goodMorning: "ダッシュボード",
+      estimatedBonus: "推定ボーナス",
+      startWorking: "表示更新",
+      totalRevenue: "総収益 (MRR)",
+      goal: "目標",
+      totalUsers: "総契約者数",
+      churned: "解約",
+      newContracts: "新規",
+      myShareLabel: "シェア率",
+      myShareDesc: "パーセンテージを入力",
+      myShare: "配分",
+      privacy: "シェア率はローカルに保存されます。",
+      live: "ライブ",
       notifications: {
-        titleSuccess: "New Contract",
-        titleError: "Churn Alert",
-        churn: "Subscription Cancelled"
+        titleSuccess: "新規契約",
+        titleError: "解約アラート",
+        churn: "サブスクリプションがキャンセルされました"
       },
       financials: {
-        title: "P/L Summary",
-        gross: "Gross Revenue",
-        expenses: "Total Expenses",
-        fees: "Platform Fees",
-        net: "Net Profit",
-        breakdown: "Breakdown"
+        title: "収支サマリー",
+        gross: "総売上",
+        expenses: "経費合計",
+        fees: "決済手数料",
+        net: "純利益",
+        breakdown: "内訳"
       },
       salesBreakdown: {
-        title: "Real-time Sales",
-        count: "subs",
-        revenue: "rev",
-        monthly: "Mo",
-        yearly: "Yr"
+        title: "リアルタイム販売状況",
+        count: "件",
+        revenue: "収益",
+        monthly: "月額",
+        yearly: "年額"
       }
     },
     en: {
