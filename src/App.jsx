@@ -178,8 +178,11 @@ const ShareMotive = () => {
   const RATE_CNY = 7.25;
   const RATE_JPY = 150.5;
 
-  // フォーマッター
+  // フォーマッター (全体用：小数点なし)
   const formatUSD = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+  // フォーマッター (単価・通知用：小数点あり)
+  const formatUnitPrice = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(num);
+  
   const formatNum = (num) => new Intl.NumberFormat('en-US').format(num);
   const formatJPY = (usd) => new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY', maximumFractionDigits: 0 }).format(usd * RATE_JPY);
   const formatCNY = (usd) => new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', maximumFractionDigits: 0 }).format(usd * RATE_CNY);
@@ -248,7 +251,8 @@ const ShareMotive = () => {
           setSubscribers(s => ({ ...s, total: s.total + 1, new: s.new + 1 }));
           playChime(); 
           const planName = lang === 'en' && planDef.nameEn ? planDef.nameEn : planDef.name;
-          addNotification(`${planName} (+${formatUSD(planDef.price)})`, 'success');
+          // 通知には formatUnitPrice を使用して正確な金額を表示
+          addNotification(`${planName} (+${formatUnitPrice(planDef.price)})`, 'success');
         } else {
           setSubscribers(s => ({ ...s, total: s.total - 1, churn: s.churn + 1 }));
           setRevenue(r => r - 30);
@@ -313,7 +317,10 @@ const ShareMotive = () => {
         <div className="space-y-2 mt-auto">
           <div className="space-y-1">
               <div className="flex justify-between text-[9px] text-zinc-500 font-mono">
-                <span>{t.salesBreakdown.monthly}</span>
+                <span className="flex items-center gap-1.5">
+                   {t.salesBreakdown.monthly} 
+                   <span className="text-zinc-600 text-[9px] font-normal opacity-70">{formatUnitPrice(moPlan.price)}</span>
+                </span>
                 <span>{moPlan.count}</span>
               </div>
               <div className="h-1 w-full bg-zinc-800/50 rounded-full overflow-hidden">
@@ -322,7 +329,10 @@ const ShareMotive = () => {
           </div>
           <div className="space-y-1">
               <div className="flex justify-between text-[9px] text-zinc-500 font-mono">
-                <span>{t.salesBreakdown.yearly}</span>
+                <span className="flex items-center gap-1.5">
+                   {t.salesBreakdown.yearly}
+                   <span className="text-zinc-600 text-[9px] font-normal opacity-70">{formatUnitPrice(yrPlan.price)}</span>
+                </span>
                 <span>{yrPlan.count}</span>
               </div>
               <div className="h-1 w-full bg-zinc-800/50 rounded-full overflow-hidden">
