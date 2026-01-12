@@ -288,7 +288,7 @@ const ShareMotive = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-zinc-200 font-sans selection:bg-indigo-500/30 selection:text-white pb-20 overflow-x-hidden">
+    <div className="min-h-screen bg-neutral-950 text-zinc-200 font-sans selection:bg-indigo-500/30 selection:text-white pb-8 overflow-x-hidden">
       
       {/* Background Ambient Glow */}
       <div className="fixed top-0 left-0 right-0 h-96 bg-gradient-to-b from-indigo-900/10 to-transparent pointer-events-none z-0"></div>
@@ -361,10 +361,10 @@ const ShareMotive = () => {
         </div>
       </header>
 
-      <main className="max-w-[1400px] mx-auto px-6 py-10 space-y-8 relative z-10">
+      <main className="max-w-[1400px] mx-auto px-6 py-6 space-y-6 relative z-10">
         
         {/* --- KPI HERO SECTION --- */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           
           {/* Main Card: Bonus & Revenue */}
           <div className="lg:col-span-8 bg-neutral-900/60 backdrop-blur-md rounded-[32px] border border-white/5 p-8 relative overflow-hidden group hover:border-white/10 transition-all duration-500">
@@ -377,7 +377,7 @@ const ShareMotive = () => {
                    <div className="bg-white/5 p-1.5 rounded-lg border border-white/5">
                      <Coins size={16} className="text-indigo-400" />
                    </div>
-                   <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-500">{t.estimatedBonus}</h2>
+                   <h2 className="text-sm font-bold uppercase tracking-widest text-zinc-500">{t.estimatedBonus}</h2>
                  </div>
                  
                  <CurrencyDisplay amount={myBonusAmount} size="large" accent={true} />
@@ -409,7 +409,7 @@ const ShareMotive = () => {
                    <div className="bg-white/5 p-1.5 rounded-lg border border-white/5">
                      <Users size={16} className="text-zinc-400" />
                    </div>
-                   <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-500">{t.totalUsers}</h3>
+                   <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-500">{t.totalUsers}</h3>
                  </div>
                  <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -433,7 +433,7 @@ const ShareMotive = () => {
         </section>
 
         {/* --- DETAILS GRID --- */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           
           {/* Plan Breakdown */}
           <div className="lg:col-span-2 bg-neutral-900/60 backdrop-blur-md rounded-[32px] border border-white/5 p-8 hover:border-white/10 transition-all duration-500">
