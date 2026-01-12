@@ -295,9 +295,7 @@ const ShareMotive = () => {
     const yrPlan = planSales.find(p => (p.name === planName || p.nameEn === planName) && p.type === 'yearly');
     if (!moPlan || !yrPlan) return null;
 
-    // 中国語モードでも英語名を表示するように変更
     const displayName = (lang === 'en' || lang === 'zh') && moPlan.nameEn ? moPlan.nameEn : moPlan.name;
-    
     const totalRev = (moPlan.count * moPlan.price) + (yrPlan.count * yrPlan.price);
 
     return (
@@ -399,7 +397,7 @@ const ShareMotive = () => {
                       onClick={() => setLang(l)} 
                       className={`px-3 py-1 text-[10px] font-bold rounded-full transition-all duration-300 ${lang === l ? 'bg-zinc-200 text-black shadow-[0_0_15px_rgba(255,255,255,0.2)]' : 'text-zinc-500 hover:text-zinc-300'}`}
                     >
-                      {langLabels[l]} {/* 言語ラベル変更 (日/英/中) */}
+                      {langLabels[l]}
                     </button>
                   ))}
                 </div>
@@ -429,7 +427,7 @@ const ShareMotive = () => {
                    <h2 className="text-xs font-bold uppercase tracking-widest text-indigo-200/80">{t.estimatedBonus}</h2>
                  </div>
 
-                 {/* 言語別表示ロジック: JPは円、ZHは元、ENはドルを強調 */}
+                 {/* 言語別表示ロジック */}
                  {lang === 'ja' ? (
                    <div>
                      <div className="text-5xl lg:text-6xl font-semibold tracking-tighter text-white mb-2 drop-shadow-2xl">
@@ -593,7 +591,7 @@ const ShareMotive = () => {
                 <div className="space-y-1">
                   <label className="text-[9px] text-zinc-500 uppercase font-bold tracking-wider">{t.simulator.targetRevenue}</label>
                   <div className="bg-black/50 border border-indigo-500/20 rounded-xl px-3 py-2 flex items-center gap-2">
-                     <span className="text-zinc-600 text-xs">$</span>
+                     <span className="text-zinc-600 text-xs">USD</span>
                      <input type="number" step="10" value={simRevenue} onChange={handleSimRevenueChange} className="w-full bg-transparent text-sm font-mono text-white focus:outline-none"/>
                   </div>
                 </div>
@@ -604,11 +602,39 @@ const ShareMotive = () => {
 
                 <div className="space-y-1">
                   <label className="text-[9px] text-indigo-400 uppercase font-bold tracking-wider">{t.simulator.targetBonus}</label>
-                  <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl px-3 py-2 flex items-center gap-2">
-                     <span className="text-indigo-400 text-xs">$</span>
-                     <input type="number" step="10" value={simBonus} onChange={handleSimBonusChange} className="w-full bg-transparent text-lg font-mono text-white font-bold focus:outline-none"/>
-                  </div>
-                  <div className="pl-1"><SubCurrency amount={simBonus} color="text-indigo-300/50" /></div>
+                  
+                  {/* JA mode */}
+                  {lang === 'ja' ? (
+                    <div className="flex flex-col gap-2">
+                        <div className="text-3xl font-bold text-white tracking-tight">
+                            {formatJPY(simBonus)}
+                        </div>
+                        <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl px-3 py-1.5 flex items-center gap-2">
+                            <span className="text-indigo-400 text-[10px] font-bold">USD</span>
+                            <input type="number" step="10" value={simBonus} onChange={handleSimBonusChange} className="w-full bg-transparent text-sm font-mono text-white font-bold focus:outline-none"/>
+                        </div>
+                    </div>
+                  ) : lang === 'zh' ? (
+                    /* ZH mode */
+                    <div className="flex flex-col gap-2">
+                        <div className="text-3xl font-bold text-white tracking-tight">
+                            {formatCNY(simBonus)}
+                        </div>
+                        <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl px-3 py-1.5 flex items-center gap-2">
+                            <span className="text-indigo-400 text-[10px] font-bold">USD</span>
+                            <input type="number" step="10" value={simBonus} onChange={handleSimBonusChange} className="w-full bg-transparent text-sm font-mono text-white font-bold focus:outline-none"/>
+                        </div>
+                    </div>
+                  ) : (
+                    /* EN mode */
+                    <>
+                        <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl px-3 py-2 flex items-center gap-2">
+                            <span className="text-indigo-400 text-xs">USD</span>
+                            <input type="number" step="10" value={simBonus} onChange={handleSimBonusChange} className="w-full bg-transparent text-lg font-mono text-white font-bold focus:outline-none"/>
+                        </div>
+                        <div className="pl-1"><SubCurrency amount={simBonus} color="text-indigo-300/50" /></div>
+                    </>
+                  )}
                 </div>
               </div>
            </div>
