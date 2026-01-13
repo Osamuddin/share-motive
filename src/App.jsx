@@ -130,7 +130,6 @@ const ShareMotive = () => {
 
   const t = translations[lang];
   
-  // 言語ラベルのマッピング
   const langLabels = { ja: '日', en: '英', zh: '中' };
 
   // ダッシュボード用データ
@@ -178,11 +177,9 @@ const ShareMotive = () => {
   const RATE_CNY = 7.25;
   const RATE_JPY = 150.5;
 
-  // フォーマッター (全体用：小数点なし)
+  // フォーマッター
   const formatUSD = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
-  // フォーマッター (単価・通知用：小数点あり)
   const formatUnitPrice = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(num);
-  
   const formatNum = (num) => new Intl.NumberFormat('en-US').format(num);
   const formatJPY = (usd) => new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY', maximumFractionDigits: 0 }).format(usd * RATE_JPY);
   const formatCNY = (usd) => new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', maximumFractionDigits: 0 }).format(usd * RATE_CNY);
@@ -251,7 +248,6 @@ const ShareMotive = () => {
           setSubscribers(s => ({ ...s, total: s.total + 1, new: s.new + 1 }));
           playChime(); 
           const planName = lang === 'en' && planDef.nameEn ? planDef.nameEn : planDef.name;
-          // 通知には formatUnitPrice を使用して正確な金額を表示
           addNotification(`${planName} (+${formatUnitPrice(planDef.price)})`, 'success');
         } else {
           setSubscribers(s => ({ ...s, total: s.total - 1, churn: s.churn + 1 }));
@@ -304,22 +300,26 @@ const ShareMotive = () => {
 
     return (
       <div className="flex flex-col justify-between h-full p-4 bg-black/40 rounded-2xl border border-white/5 hover:border-white/15 hover:bg-black/60 transition-all duration-300 group">
-        <div className="flex justify-between items-start mb-2">
-            <div>
-              <div className={`w-6 h-1 rounded-full ${moPlan.bar} mb-2 shadow-[0_0_10px_rgba(0,0,0,0.5)]`}></div>
-              <h4 className={`font-bold text-xs leading-snug ${moPlan.color || 'text-white'} opacity-90 group-hover:opacity-100`}>{displayName}</h4>
-            </div>
-            <div className="text-right">
-              <span className="block text-lg font-bold text-white tracking-tight group-hover:scale-105 transition-transform origin-right">${Math.floor(totalRev).toLocaleString()}</span>
+        
+        {/* Header: Vertical Stack */}
+        <div className="mb-3">
+            <div className={`w-6 h-1 rounded-full ${moPlan.bar} mb-2 shadow-[0_0_10px_rgba(0,0,0,0.5)]`}></div>
+            {/* Plan Name */}
+            <h4 className={`font-bold text-xs sm:text-xs leading-snug ${moPlan.color || 'text-white'} opacity-90 group-hover:opacity-100 block mb-1`}>{displayName}</h4>
+            
+            {/* Price moved below name, LEFT aligned */}
+            <div className="text-left">
+              <span className="block text-lg sm:text-lg font-bold text-white tracking-tight group-hover:scale-105 transition-transform origin-left">${Math.floor(totalRev).toLocaleString()}</span>
             </div>
         </div>
 
         <div className="space-y-2 mt-auto">
+          {/* Monthly Row */}
           <div className="space-y-1">
-              <div className="flex justify-between text-[9px] text-zinc-500 font-mono">
+              <div className="flex justify-between text-[10px] sm:text-[9px] text-zinc-300 sm:text-zinc-500 font-mono">
                 <span className="flex items-center gap-1.5">
                    {t.salesBreakdown.monthly} 
-                   <span className="text-zinc-600 text-[9px] font-normal opacity-70">{formatUnitPrice(moPlan.price)}</span>
+                   <span className="text-zinc-400 sm:text-zinc-600 text-[9px] font-normal opacity-70">{formatUnitPrice(moPlan.price)}</span>
                 </span>
                 <span>{moPlan.count}</span>
               </div>
@@ -327,11 +327,12 @@ const ShareMotive = () => {
                 <div className="h-full bg-zinc-500 rounded-full transition-all duration-500" style={{ width: `${Math.min((moPlan.count / 150) * 100, 100)}%` }}></div>
               </div>
           </div>
+          {/* Yearly Row */}
           <div className="space-y-1">
-              <div className="flex justify-between text-[9px] text-zinc-500 font-mono">
+              <div className="flex justify-between text-[10px] sm:text-[9px] text-zinc-300 sm:text-zinc-500 font-mono">
                 <span className="flex items-center gap-1.5">
                    {t.salesBreakdown.yearly}
-                   <span className="text-zinc-600 text-[9px] font-normal opacity-70">{formatUnitPrice(yrPlan.price)}</span>
+                   <span className="text-zinc-400 sm:text-zinc-600 text-[9px] font-normal opacity-70">{formatUnitPrice(yrPlan.price)}</span>
                 </span>
                 <span>{yrPlan.count}</span>
               </div>
@@ -346,58 +347,58 @@ const ShareMotive = () => {
 
   // --- Common Card Style ---
   const CardBase = ({ children, className = "" }) => (
-    <div className={`bg-neutral-900/60 backdrop-blur-xl rounded-[28px] border border-white/5 p-6 hover:border-white/10 hover:shadow-2xl hover:shadow-black/50 transition-all duration-500 ${className}`}>
+    <div className={`bg-neutral-900/60 backdrop-blur-xl rounded-[28px] border border-white/5 p-4 sm:p-6 hover:border-white/10 hover:shadow-2xl hover:shadow-black/50 transition-all duration-500 ${className}`}>
       {children}
     </div>
   );
 
   return (
-    <div className="min-h-screen h-full w-full bg-[#050505] text-zinc-200 font-sans selection:bg-indigo-500/30 selection:text-white flex flex-col relative overflow-hidden">
+    <div className="min-h-screen h-full w-full bg-[#050505] text-zinc-200 font-sans selection:bg-indigo-500/30 selection:text-white flex flex-col relative overflow-y-auto lg:overflow-hidden">
       
       {/* Background Ambience */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-indigo-600/10 rounded-[100%] blur-[120px] pointer-events-none z-0"></div>
       <div className="fixed bottom-0 right-0 w-[800px] h-[800px] bg-emerald-600/5 rounded-full blur-[120px] pointer-events-none z-0"></div>
       
       {/* --- Header --- */}
-      <header className="shrink-0 z-40 flex items-center justify-center pt-6 pb-2 px-8">
+      <header className="shrink-0 z-40 flex items-center justify-center pt-4 pb-2 px-4 sm:pt-6 sm:px-8">
         <div className="w-full max-w-[1400px] flex justify-between items-center">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div className="relative group cursor-pointer">
               <div className="absolute inset-0 bg-indigo-500 rounded-xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-              <div className="relative bg-black/40 border border-white/10 p-2.5 rounded-xl shadow-lg backdrop-blur-md">
+              <div className="relative bg-black/40 border border-white/10 p-2 rounded-xl shadow-lg backdrop-blur-md">
                 <LayoutGrid size={18} className="text-white" />
               </div>
             </div>
             <div>
-              <h1 className="text-lg font-bold text-white tracking-tight leading-none">{t.appTitle}</h1>
+              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight leading-none">{t.appTitle}</h1>
               <div className="flex items-center gap-2 mt-1">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                 </span>
-                <span className="text-[9px] text-emerald-500 font-mono font-bold tracking-widest uppercase opacity-80">Live Dashboard</span>
+                <span className="text-[9px] text-emerald-500 font-mono font-bold tracking-widest uppercase opacity-80">Live</span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-             <div className="hidden sm:flex items-center gap-3 bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:bg-white/10 transition-colors backdrop-blur-md">
-                <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">{t.myShareLabel}</span>
-                <div className="h-3 w-px bg-white/10"></div>
-                <div className="flex items-baseline gap-1">
+          <div className="flex items-center gap-2 sm:gap-4">
+             <div className="flex items-center gap-1.5 sm:gap-3 bg-white/5 px-2 py-1 sm:px-4 sm:py-2 rounded-full border border-white/5 hover:bg-white/10 transition-colors backdrop-blur-md">
+                <span className="text-[9px] text-zinc-300 sm:text-zinc-500 font-bold uppercase tracking-widest">{t.myShareLabel}</span>
+                <div className="h-3 w-px bg-white/10 hidden sm:block"></div>
+                <div className="flex items-baseline gap-0.5 sm:gap-1">
                   <input 
                     type="number" 
                     value={mySharePercent}
                     onChange={(e) => setMySharePercent(Number(e.target.value))}
-                    className="w-10 bg-transparent text-right text-white font-mono font-bold focus:outline-none focus:text-indigo-400 transition-colors text-sm"
+                    className="w-5 sm:w-10 bg-transparent text-right text-white font-mono font-bold focus:outline-none focus:text-indigo-400 transition-colors text-sm"
                     step="0.1"
                   />
-                  <span className="text-zinc-500 text-[10px]">%</span>
+                  <span className="text-zinc-300 sm:text-zinc-500 text-[10px]">%</span>
                 </div>
              </div>
              
              <div className="flex items-center gap-2">
-                <button onClick={toggleSound} className={`w-9 h-9 flex items-center justify-center rounded-full transition-all hover:bg-white/10 ${soundEnabled ? 'text-zinc-300' : 'text-zinc-600'}`}>
+                <button onClick={toggleSound} className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full transition-all hover:bg-white/10 ${soundEnabled ? 'text-zinc-300' : 'text-zinc-600'}`}>
                   {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
                 </button>
                 <div className="flex bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-md">
@@ -405,7 +406,7 @@ const ShareMotive = () => {
                     <button 
                       key={l} 
                       onClick={() => setLang(l)} 
-                      className={`px-3 py-1 text-[10px] font-bold rounded-full transition-all duration-300 ${lang === l ? 'bg-zinc-200 text-black shadow-[0_0_15px_rgba(255,255,255,0.2)]' : 'text-zinc-500 hover:text-zinc-300'}`}
+                      className={`px-2 py-1 sm:px-3 sm:py-1 text-[10px] font-bold rounded-full transition-all duration-300 ${lang === l ? 'bg-zinc-200 text-black shadow-[0_0_15px_rgba(255,255,255,0.2)]' : 'text-zinc-500 hover:text-zinc-300'}`}
                     >
                       {langLabels[l]}
                     </button>
@@ -417,16 +418,16 @@ const ShareMotive = () => {
       </header>
 
       {/* --- Main Content --- */}
-      <main className="flex-1 flex items-center justify-center p-6 lg:p-12 overflow-hidden z-10">
+      <main className="flex-1 flex items-start lg:items-center justify-center p-4 lg:p-12 z-10">
         
-        {/* Main Grid: 4 columns */}
-        <div className="w-full max-w-[1400px] h-full max-h-[850px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Main Grid */}
+        <div className="w-full max-w-[1400px] lg:h-full lg:max-h-[850px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           
           {/* === COLUMN 1 (Left: KPIs) === */}
-          <div className="flex flex-col gap-5 h-full">
+          <div className="flex flex-col gap-4 sm:gap-5 h-full">
             
-            {/* Top-Left: Bonus (HIGHLIGHTED - Currency Emphasis) */}
-            <div className="flex-1 relative overflow-hidden group flex flex-col justify-center bg-gradient-to-br from-indigo-950/40 to-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-indigo-500/40 p-6 shadow-[0_0_40px_rgba(79,70,229,0.15)] hover:shadow-[0_0_60px_rgba(79,70,229,0.3)] hover:border-indigo-400/60 transition-all duration-500">
+            {/* Top-Left: Bonus */}
+            <div className="flex-1 relative overflow-hidden group flex flex-col justify-center bg-gradient-to-br from-indigo-950/40 to-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-indigo-500/40 p-6 shadow-[0_0_40px_rgba(79,70,229,0.15)] hover:shadow-[0_0_60px_rgba(79,70,229,0.3)] hover:border-indigo-400/60 transition-all duration-500 min-h-[180px]">
                <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-indigo-500/20 rounded-full blur-[60px] -translate-y-1/2 translate-x-1/3 pointer-events-none group-hover:bg-indigo-400/30 transition-colors duration-500"></div>
                
                <div className="relative z-10">
@@ -434,10 +435,9 @@ const ShareMotive = () => {
                    <div className="bg-indigo-500/20 p-1.5 rounded-lg border border-indigo-500/30 text-indigo-300 shadow-lg shadow-indigo-500/20">
                      <Sparkles size={16} fill="currentColor" className="text-indigo-200" />
                    </div>
-                   <h2 className="text-xs font-bold uppercase tracking-widest text-indigo-200/80">{t.estimatedBonus}</h2>
+                   <h2 className="text-xs font-bold uppercase tracking-widest text-indigo-100 sm:text-indigo-200/80">{t.estimatedBonus}</h2>
                  </div>
 
-                 {/* 言語別表示ロジック */}
                  {lang === 'ja' ? (
                    <div>
                      <div className="text-5xl lg:text-6xl font-semibold tracking-tighter text-white mb-2 drop-shadow-2xl">
@@ -468,12 +468,12 @@ const ShareMotive = () => {
             </div>
 
             {/* Bottom-Left: Users */}
-            <CardBase className="flex-1 flex flex-col justify-center">
+            <CardBase className="flex-1 flex flex-col justify-center min-h-[160px]">
               <div className="flex items-center gap-2 mb-3">
                  <div className="bg-white/5 p-1.5 rounded-lg border border-white/5">
-                    <Users size={14} className="text-zinc-500" />
+                    <Users size={14} className="text-zinc-400 sm:text-zinc-500" />
                  </div>
-                 <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{t.totalUsers}</h3>
+                 <h3 className="text-xs sm:text-[10px] font-bold uppercase tracking-widest text-zinc-300 sm:text-zinc-500">{t.totalUsers}</h3>
               </div>
               <div className="text-4xl lg:text-5xl font-medium text-white tracking-tight mb-4">{formatNum(subscribers.total)}</div>
               
@@ -485,14 +485,14 @@ const ShareMotive = () => {
                  </div>
                  <div className="h-8 w-px bg-white/5"></div>
                  <div className="flex flex-col justify-center gap-1.5 w-full">
-                    <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider mb-0.5">{t.monthlyStats}</div>
+                    <div className="text-[9px] text-zinc-400 sm:text-zinc-500 font-bold uppercase tracking-wider mb-0.5">{t.monthlyStats}</div>
                     
                     <div className="flex justify-between items-center w-full text-xs">
-                      <span className="text-zinc-400">{t.newContracts}</span>
+                      <span className="text-zinc-300 sm:text-zinc-400">{t.newContracts}</span>
                       <span className="font-medium text-emerald-400">+{subscribers.new}</span>
                     </div>
                     <div className="flex justify-between items-center w-full text-xs">
-                      <span className="text-zinc-400">{t.churned}</span>
+                      <span className="text-zinc-300 sm:text-zinc-400">{t.churned}</span>
                       <span className="font-medium text-rose-500">-{subscribers.churn}</span>
                     </div>
                  </div>
@@ -502,12 +502,12 @@ const ShareMotive = () => {
           </div>
 
           {/* === COLUMN 2 & 3 (Center: Plans) === */}
-          <div className="lg:col-span-2 h-full">
+          <div className="lg:col-span-2 h-full min-h-[400px]">
             <CardBase className="h-full flex flex-col p-2 lg:p-5 !bg-neutral-900/40">
               <div className="flex items-center justify-between mb-4 px-2 pt-1 shrink-0">
                 <div className="flex items-center gap-2">
-                  <LayoutGrid size={14} className="text-zinc-500" />
-                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{t.plansTitle}</h3>
+                  <LayoutGrid size={14} className="text-zinc-400 sm:text-zinc-500" />
+                  <h3 className="text-xs sm:text-[10px] font-bold uppercase tracking-widest text-zinc-300 sm:text-zinc-500">{t.plansTitle}</h3>
                 </div>
               </div>
 
@@ -522,13 +522,13 @@ const ShareMotive = () => {
           </div>
 
           {/* === COLUMN 4 (Right: Financials) === */}
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full min-h-[300px]">
             <CardBase className="h-full flex flex-col justify-center">
               <div className="flex items-center gap-2 mb-8">
                 <div className="bg-white/5 p-1.5 rounded-lg border border-white/5">
                    <PieChart className="text-orange-400" size={14} />
                 </div>
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{t.financials.title}</h3>
+                <h3 className="text-xs sm:text-[10px] font-bold uppercase tracking-widest text-zinc-300 sm:text-zinc-500">{t.financials.title}</h3>
               </div>
               
               <div className="flex-1 flex flex-col justify-center">
@@ -544,27 +544,27 @@ const ShareMotive = () => {
                     </div>
 
                     <div className="flex flex-col gap-2.5">
-                       <div className="flex justify-between text-xs text-zinc-400 font-mono border-b border-white/5 pb-2">
+                       <div className="flex justify-between text-xs text-zinc-300 sm:text-zinc-400 font-mono border-b border-white/5 pb-2">
                           <span className="uppercase tracking-wider opacity-80">{t.financials.gross}</span>
                           <span className="text-white font-bold">{formatUSD(revenue)}</span>
                        </div>
 
                        <div className="flex flex-col gap-1.5 py-1">
-                          <div className="flex justify-between text-[11px] text-zinc-500 font-mono">
+                          <div className="flex justify-between text-[11px] text-zinc-300 sm:text-zinc-500 font-mono">
                              <span>{t.financials.ads}</span>
                              <span className="text-rose-400/80">-{formatUSD(fixedExpenses.ads)}</span>
                           </div>
-                          <div className="flex justify-between text-[11px] text-zinc-500 font-mono">
+                          <div className="flex justify-between text-[11px] text-zinc-300 sm:text-zinc-500 font-mono">
                              <span>{t.financials.server}</span>
                              <span className="text-rose-400/80">-{formatUSD(fixedExpenses.server)}</span>
                           </div>
-                          <div className="flex justify-between text-[11px] text-zinc-500 font-mono">
+                          <div className="flex justify-between text-[11px] text-zinc-300 sm:text-zinc-500 font-mono">
                              <span>{t.financials.fees}</span>
                              <span className="text-amber-400/80">-{formatUSD(stripeFees)}</span>
                           </div>
                        </div>
 
-                       <div className="flex justify-between text-xs text-zinc-400 font-mono border-t border-white/5 pt-2">
+                       <div className="flex justify-between text-xs text-zinc-300 sm:text-zinc-400 font-mono border-t border-white/5 pt-2">
                           <span className="uppercase tracking-wider opacity-80">{t.financials.margin}</span>
                           <span className="text-emerald-400 font-bold">{(netProfit/revenue*100).toFixed(1)}%</span>
                        </div>
@@ -613,7 +613,6 @@ const ShareMotive = () => {
                 <div className="space-y-1">
                   <label className="text-[9px] text-indigo-400 uppercase font-bold tracking-wider">{t.simulator.targetBonus}</label>
                   
-                  {/* JA mode */}
                   {lang === 'ja' ? (
                     <div className="flex flex-col gap-2">
                         <div className="text-3xl font-bold text-white tracking-tight">
@@ -625,7 +624,6 @@ const ShareMotive = () => {
                         </div>
                     </div>
                   ) : lang === 'zh' ? (
-                    /* ZH mode */
                     <div className="flex flex-col gap-2">
                         <div className="text-3xl font-bold text-white tracking-tight">
                             {formatCNY(simBonus)}
@@ -636,7 +634,6 @@ const ShareMotive = () => {
                         </div>
                     </div>
                   ) : (
-                    /* EN mode */
                     <>
                         <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl px-3 py-2 flex items-center gap-2">
                             <span className="text-indigo-400 text-xs">USD</span>
